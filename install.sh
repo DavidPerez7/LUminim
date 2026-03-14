@@ -53,6 +53,52 @@ detect_os() {
     esac
 }
 
+check_tools() {
+    print_info "Checking for required tools..."
+    
+    local missing_tools=()
+    
+    if ! command -v gcc &> /dev/null; then
+        missing_tools+=("gcc")
+    else
+        print_success "gcc found"
+    fi
+    
+    if ! command -v g++ &> /dev/null; then
+        missing_tools+=("g++")
+    else
+        print_success "g++ found"
+    fi
+    
+    if ! command -v git &> /dev/null; then
+        missing_tools+=("git")
+    else
+        print_success "git found"
+    fi
+    
+    if ! command -v pkg-config &> /dev/null; then
+        missing_tools+=("pkg-config")
+    else
+        print_success "pkg-config found"
+    fi
+    
+    if ! command -v qmake &> /dev/null; then
+        missing_tools+=("Qt5-devel")
+    else
+        print_success "qmake (Qt5) found"
+    fi
+    
+    if [ ${#missing_tools[@]} -gt 0 ]; then
+        echo ""
+        print_info "Missing tools: ${missing_tools[*]}"
+        return 1
+    else
+        echo ""
+        print_success "All required tools are installed"
+        return 0
+    fi
+}
+
 install_deps_debian() {
     print_info "Installing dependencies ($DISTRO_NAME)"
     
@@ -90,6 +136,8 @@ libxkbcommon-x11-dev libfluxbox-dev git pkg-config libssl-dev"
     fi
     
     print_success "Dependencies installed"
+    echo ""
+    check_tools
 }
 
 install_deps_void() {
@@ -117,7 +165,7 @@ install_deps_void() {
         exit 1
     fi
     
-    VOID_PACKAGES="base-devel qt5-base qt5-declarative qt5-svg \
+    VOID_PACKAGES="base-devel qt5 qt5-tools \
 libxcb-devel xcb-util-devel xcb-util-icccm-devel \
 xcb-util-image-devel xcb-util-xfixes-devel xkeyboard-config-devel \
 fluxbox-devel git pkg-config openssl-devel"
@@ -129,6 +177,8 @@ fluxbox-devel git pkg-config openssl-devel"
     fi
     
     print_success "Dependencies installed"
+    echo ""
+    check_tools
 }
 
 build_lumina() {
@@ -213,6 +263,10 @@ main() {
     
     detect_os
     print_info "Detected: $DISTRO_NAME (ID: $OS)"
+    echo ""
+    print_info "Checking installed tools before installation..."
+    check_tools
+    echo ""
     
     case "$DISTRO_TYPE" in
         debian)

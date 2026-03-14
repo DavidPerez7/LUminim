@@ -160,7 +160,8 @@ install_deps_void() {
     print_info "Updating packages..."
     sudo xbps-install -u xbps || true
     
-    VOID_PACKAGES="base-devel qt5-devel qt5-tools-devel \
+    VOID_PACKAGES="base-devel qt5-devel qt5-tools-devel qt5-x11extras-devel \
+qt5-multimedia-devel qt5-svg-devel qt5-declarative-devel \
 xcb-util-devel xcb-util-wm-devel xcb-util-image-devel xcb-util-keysyms-devel \
 xcb-util-renderutil-devel fluxbox git pkg-config openssl-devel \
 libXdamage-devel libX11-devel"

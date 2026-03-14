@@ -25,65 +25,125 @@
 
 QStringList LTHEME::availableSystemThemes(){
   //returns: [name::::path] for each item
-  QDir dir(LOS::LuminaShare()+"../lthemeengine/desktop_qss");
-  QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  // Lazy loading: Cache themes list to avoid rescanning on every call
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  // Refresh cache if older than 60 seconds or if empty
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir(LOS::LuminaShare()+"../lthemeengine/desktop_qss");
+    QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableSystemStyles(){
   //returns: [name::::path] for each item
-  QDir dir(LOS::LuminaShare()+"../lthemeengine/qss");
-  QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  // Lazy loading: Cache styles list
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir(LOS::LuminaShare()+"../lthemeengine/qss");
+    QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableLocalThemes(){	//returns: [name::::path] for each item
-  QDir dir( QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/desktop_qss");
-  QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  // Lazy loading: Cache local themes
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir( QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/desktop_qss");
+    QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableLocalStyles(){	//returns: [name::::path] for each item
-  QDir dir( QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/qss");
-  QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  // Lazy loading: Cache local styles
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir( QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/qss");
+    QStringList list = dir.entryList(QStringList() <<"*.qss", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".qss",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableSystemColors(){ 	//returns: [name::::path] for each item
-  //returns: [name::::path] for each item
-  QDir dir(LOS::LuminaShare()+"../lthemeengine/colors");
-  QStringList list = dir.entryList(QStringList() <<"*.conf", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".conf",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  //Lazy loading: Cache system colors
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir(LOS::LuminaShare()+"../lthemeengine/colors");
+    QStringList list = dir.entryList(QStringList() <<"*.conf", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".conf",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableLocalColors(){ 	//returns: [name::::path] for each item
-  QDir dir(QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/colors");
-  QStringList list = dir.entryList(QStringList() <<"*.conf", QDir::Files, QDir::Name);
-  for(int i=0; i<list.length(); i++){
-    //Format the output entry [<name>::::<fullpath>]
-    list[i] = list[i].section(".conf",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+  // Lazy loading: Cache local colors
+  static QStringList cache;
+  static QDateTime cacheTime;
+  QDateTime now = QDateTime::currentDateTime();
+  
+  if(cache.isEmpty() || (cacheTime.isValid() && cacheTime.secsTo(now) > 60)){
+    cache.clear();
+    QDir dir(QString(getenv("XDG_CONFIG_HOME"))+"/lthemeengine/colors");
+    QStringList list = dir.entryList(QStringList() <<"*.conf", QDir::Files, QDir::Name);
+    for(int i=0; i<list.length(); i++){
+      //Format the output entry [<name>::::<fullpath>]
+      list[i] = list[i].section(".conf",0,0)+"::::"+dir.absoluteFilePath(list[i]);
+    }
+    cache = list;
+    cacheTime = now;
   }
-  return list;
+  return cache;
 }
 
 QStringList LTHEME::availableSystemIcons(){ 	//returns: [name] for each item

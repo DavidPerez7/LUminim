@@ -14,15 +14,15 @@
 //List all the individual plugin includes here
 #include "LDPlugin.h"
 //#include "SamplePlugin.h"
-#include "calendar/CalendarPlugin.h"
+//#include "calendar/CalendarPlugin.h"  //Removed for minimal footprint
 #include "applauncher/AppLauncherPlugin.h"
 #include "desktopview/DesktopViewPlugin.h"
-#include "notepad/NotepadPlugin.h"
-#include "audioplayer/PlayerWidget.h"
-#include "systemmonitor/MonitorWidget.h"
+//#include "notepad/NotepadPlugin.h"  //Removed for minimal footprint
+//#include "audioplayer/PlayerWidget.h"  //Removed for minimal footprint
+//#include "systemmonitor/MonitorWidget.h"  //Removed for minimal footprint
 //#include "quickcontainer/QuickDPlugin.h"
 //#include "messagecenter/MessageCenter.h"
-#include "rssreader/RSSFeedPlugin.h"
+//#include "rssreader/RSSFeedPlugin.h"  //Removed for minimal footprint
 
 class NewDP{
 public:
@@ -32,25 +32,14 @@ public:
 	  /*if(plugin.section("---",0,0)=="sample"){
 	    plug = new SamplePlugin(parent, plugin);
 	  }else */
-	  if(plugin.section("---",0,0)=="calendar"){
+	  /*if(plugin.section("---",0,0)=="calendar"){  //Removed for minimal footprint
 	    plug = new CalendarPlugin(parent, plugin);
-	  }else if(plugin.section("---",0,0).section("::",0,0)=="applauncher"){
+	  }else*/
+	  if(plugin.section("---",0,0).section("::",0,0)=="applauncher"){
 	    //This plugin can be pre-initialized to a file path after the "::" delimiter
 	    plug = new AppLauncherPlugin(parent, plugin);
 	  }else if(plugin.section("---",0,0)=="desktopview"){
 	    plug = new DesktopViewPlugin(parent, plugin);
-	  }else if(plugin.section("---",0,0)=="notepad"){
-	    plug = new NotePadPlugin(parent, plugin);
-	  }else if(plugin.section("---",0,0)=="audioplayer"){
-	    plug = new AudioPlayerPlugin(parent, plugin);
-	  }else if(plugin.section("---",0,0)=="systemmonitor"){
-	    plug = new SysMonitorPlugin(parent, plugin);
-	  //}else if(plugin.section("---",0,0)=="messagecenter"){
-	    //plug = new MessageCenterPlugin(parent, plugin);
-	  //}else if(plugin.section("---",0,0).startsWith("quick-") && LUtils::validQuickPlugin(plugin.section("---",0,0)) ){
-	    //plug = new QuickDPlugin(parent, plugin);
-	  }else if(plugin.section("---",0,0)=="rssreader"){
-	    plug = new RSSFeedPlugin(parent, plugin);
 	  }else{
 	    qWarning() << "Invalid Desktop Plugin:"<<plugin << " -- Ignored";
 	  }

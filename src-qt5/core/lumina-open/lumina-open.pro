@@ -1,7 +1,8 @@
 include("$${PWD}/../../OS-detect.pri")
 
-QT       += core gui
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets x11extras
+QT       += core gui x11extras
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# Removed network for minimal footprint (x11extras needed for QX11Info)
 
 
 TARGET = lumina-open

@@ -30,7 +30,7 @@
 #include "LDesktop.h"
 //#include "WMProcess.h"
 //#include "BootSplash.h"
-#include <LScreenSaver.h>
+//#include <LScreenSaver.h>  // Removed - screensaver disabled for minimal footprint
 
 #include <LuminaX11.h>
 #include <LuminaSingleApplication.h>
@@ -98,7 +98,7 @@ public:
 
 	QSettings* sessionSettings();
 	QSettings* DesktopPluginSettings();
-	LScreenSaver* screenSaver();
+	//LScreenSaver* screenSaver();  // Removed - screensaver disabled
 
 	//Keep track of which non-desktop window should be treated as active
 	WId activeWindow(); //This will return the last active window if a desktop element is currently active
@@ -127,7 +127,7 @@ private:
 	QMediaPlayer *mediaObj;
 	QSettings *sessionsettings, *DPlugSettings;
 	bool cleansession;
-	LScreenSaver *ScreenSaver;
+	//LScreenSaver *ScreenSaver;  // Removed - screensaver disabled
 	//QList<QRect> savedScreens;
 
 	//System Tray Variables

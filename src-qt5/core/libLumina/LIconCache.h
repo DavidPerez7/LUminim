@@ -64,10 +64,12 @@ public:
 private:
 	QHash<QString, icon_data> HASH;
 	QFileSystemWatcher *WATCHER;
+	static const int MAX_CACHE_SIZE = 50; // Lazy loading: Keep only 50 icons in memory
 
 	icon_data createData(QString icon);
 	QStringList getChildIconDirs(QString path); //recursive function to find directories with icons in them
 	QStringList getIconThemeDepChain(QString theme, QStringList paths);
+	void cleanupCache(); // Remove least-used icons when cache exceeds limit
 
 	void startReadFile(QString id, QString path);
 	void ReadFile(LIconCache *obj, QString id, QString path);

@@ -1,10 +1,12 @@
 include(../../OS-detect.pri)
 
 TEMPLATE = subdirs
+# Minimal footprint: keep only essential components
+# Removed: lthemeengine (GUI editor - not essential), lthemeengine-sstest (screensaver test)
 SUBDIRS += src/lthemeengine-qtplugin \
-		src/lthemeengine-style \
-		src/lthemeengine \
-		src/lthemeengine-sstest
+		src/lthemeengine-style
+#		src/lthemeengine \
+#		src/lthemeengine-sstest
 
 colors.files = colors/*.conf
 colors.path = $${L_SHAREDIR}/lthemeengine/colors

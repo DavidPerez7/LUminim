@@ -17,14 +17,9 @@ GIT_VERSION=$$system(git describe --always)
 #LuminaOS files
 HEADERS *= $${PWD}/LuminaOS.h
 
-# LuminaOS support functions (or fall back to generic one)
-exists($${PWD}/LuminaOS-$${LINUX_DISTRO}.cpp){
-  SOURCES *= $${PWD}/LuminaOS-$${LINUX_DISTRO}.cpp
-}else:exists($${PWD}/LuminaOS-$${OS}.cpp){
-  SOURCES *= $${PWD}/LuminaOS-$${OS}.cpp
-}else{
-  SOURCES *= $${PWD}/LuminaOS-template.cpp
-}
+#LuminaOS support functions - LINUX ONLY for minimal footprint
+# Eliminated support for: FreeBSD, OpenBSD, Debian, DragonFly, NetBSD, Gentoo, Slackware, NixOS, kFreeBSD
+SOURCES *= $${PWD}/LuminaOS-Linux.cpp
 
 #LUtils Files
 SOURCES *= $${PWD}/LUtils.cpp

@@ -365,5 +365,28 @@ void LIconCache::IconLoaded(QString id, QDateTime sync, QByteArray *data){
     //Now update the hash and let the world know it is available now
     HASH.insert(id, idat);
     this->emit IconAvailable(id);
+    // Lazy loading: cleanup cache if it grows too large
+    cleanupCache();
+  }
+}
+
+// Lazy loading: Keep cache size limited to MAX_CACHE_SIZE entries
+void LIconCache::cleanupCache(){
+  if(HASH.size() <= MAX_CACHE_SIZE){ return; }
+  // Remove oldest icons (those with oldest lastread timestamp)
+  int toRemove = HASH.size() - MAX_CACHE_SIZE;
+  while(toRemove > 0 && !HASH.isEmpty()){
+    QString oldestKey;
+    QDateTime oldestTime = QDateTime::currentDateTime();
+    for(auto it = HASH.constBegin(); it != HASH.constEnd(); ++it){
+      if(it.value().lastread < oldestTime){
+        oldestTime = it.value().lastread;
+        oldestKey = it.key();
+      }
+    }
+    if(!oldestKey.isEmpty()){ 
+      HASH.remove(oldestKey);
+      toRemove--;
+    } else { break; }
   }
 }

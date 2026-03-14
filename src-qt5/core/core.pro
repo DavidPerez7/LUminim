@@ -9,11 +9,12 @@ CONFIG += recursive
 SUBDIRS+= lumina-desktop \
 	lumina-session \
 	lumina-open \
-	lumina-info \
-	lumina-pingcursor \
 	$${PWD}/../../icon-theme \
 	lumina-theme-engine \
 	lumina-checkpass
+#Removed for minimal footprint:
+#	lumina-info \
+#	lumina-pingcursor \
 #	lumina-desktop-unified
 
 #Also install any special menu scripts

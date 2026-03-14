@@ -162,7 +162,7 @@ install_deps_void() {
     
     VOID_PACKAGES="base-devel qt5-devel qt5-tools-devel \
 xcb-util-devel xcb-util-wm-devel xcb-util-image-devel xcb-util-keysyms-devel \
-xcb-util-renderutil-devel fluxbox-devel git pkg-config openssl-devel \
+xcb-util-renderutil-devel fluxbox git pkg-config openssl-devel \
 libXdamage-devel libX11-devel"
     
     print_info "Installing required packages..."

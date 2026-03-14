@@ -91,6 +91,7 @@ check_tools() {
     if [ ${#missing_tools[@]} -gt 0 ]; then
         echo ""
         print_info "Missing tools: ${missing_tools[*]}"
+        print_info "These will be installed automatically..."
         return 1
     else
         echo ""
@@ -264,8 +265,8 @@ main() {
     detect_os
     print_info "Detected: $DISTRO_NAME (ID: $OS)"
     echo ""
-    print_info "Checking installed tools before installation..."
-    check_tools
+    print_info "Checking installed tools..."
+    check_tools || true
     echo ""
     
     case "$DISTRO_TYPE" in

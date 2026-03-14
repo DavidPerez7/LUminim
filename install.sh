@@ -155,29 +155,21 @@ install_deps_void() {
     fi
     
     print_info "Syncing repositories..."
-    if ! sudo xbps-install -S; then
-        print_error "Failed to sync repositories"
-        exit 1
-    fi
+    sudo xbps-install -S || true
     
     print_info "Updating packages..."
-    if ! sudo xbps-install -u xbps; then
-        print_error "Failed to update xbps"
-        exit 1
-    fi
+    sudo xbps-install -u xbps || true
     
-    VOID_PACKAGES="base-devel qt5 qt5-tools \
-libxcb-devel xcb-util-devel xcb-util-icccm-devel \
-xcb-util-image-devel xcb-util-xfixes-devel xkeyboard-config-devel \
-fluxbox-devel git pkg-config openssl-devel"
+    VOID_PACKAGES="base-devel qt5-devel qt5-tools-devel \
+xcb-util-devel xcb-util-wm-devel xcb-util-image-devel xcb-util-keysyms-devel \
+xcb-util-renderutil-devel fluxbox-devel git pkg-config openssl-devel \
+libXdamage-devel libX11-devel"
     
     print_info "Installing required packages..."
-    if ! sudo xbps-install -y $VOID_PACKAGES; then
-        print_error "Failed to install dependencies"
-        exit 1
-    fi
+    # We use -I to ignore packages already installed (don't error out)
+    sudo xbps-install -yI $VOID_PACKAGES
     
-    print_success "Dependencies installed"
+    print_success "Dependencies processed"
     echo ""
     check_tools
 }

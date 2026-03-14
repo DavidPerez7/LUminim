@@ -198,7 +198,8 @@ build_lumina() {
     cd "$BUILD_DIR" || exit 1
     
     print_info "Running qmake..."
-    if ! qmake ../src-qt5/src-qt5.pro; then
+    # Force C++11 standard to avoid C++20 template-id error with Qt5.15 on Void Linux
+    if ! qmake ../src-qt5/src-qt5.pro "CONFIG+=c++11" "QMAKE_CXXFLAGS+=-std=c++11"; then
         print_error "qmake configuration failed"
         exit 1
     fi

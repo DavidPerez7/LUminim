@@ -3,5 +3,5 @@ Exec=start-lumina-desktop --unified
 TryExec=lumina-desktop-unified
 Icon=Lumina-DE
 Type=Application
-Name=Lumina 2
-Comment=Illuminating the desktop
+Name=LUminim 2
+Comment=Optimized Lumina Desktop Environment

@@ -82,11 +82,32 @@ We use a simple `MAJOR.MINOR` scheme to reflect incremental improvements.
 ## Reporting Issues (planned)
 This repo is under active development. For now, the best way to report issues is via GitHub Issues in this repository; mark reports with `void-linux` or `optimization` where appropriate.
 
-## Build & Install
+## Build & Install (Surgical Way)
+1. **Prepare Environment**:
+```bash
+git clone https://github.com/DavidPerez7/LUminim.git
+cd LUminim
+make distclean
+```
+2. **Compile & Install**:
 ```bash
 qmake -r CONFIG+=FASTBUILD
 make -j$(nproc)
 sudo make install
+```
+3. **Session Setup & Repair**:
+```bash
+# Remove old sessions
+sudo rm /usr/share/xsessions/lumina.desktop /usr/share/xsessions/LUminim.desktop
+
+# Install new session
+sudo cp src-qt5/core/lumina-desktop/Lumina-DE.desktop /usr/share/xsessions/LUminim.desktop
+
+# Ensure Window Manager (Openbox)
+sudo xbps-install -S openbox
+sudo ln -sf /usr/bin/openbox /usr/bin/lumina-wm
+sudo ln -sf /usr/bin/lumina-session /usr/local/bin/lumina-session
+sudo reboot
 ```
 
 ---

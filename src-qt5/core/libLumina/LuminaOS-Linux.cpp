@@ -12,8 +12,24 @@
 
 //can't read xbrightness settings - assume invalid until set
 static int screenbrightness = -1;
+static QString os_name = "";
 
-QString LOS::OSName(){ return "Linux"; }
+QString LOS::OSName(){
+  if(os_name.isEmpty()){
+    if(QFile::exists("/etc/os-release")){
+       QStringList info = LUtils::readFile("/etc/os-release");
+       for(int i=0; i<info.length(); i++){
+	 if(info[i].startsWith("ID=")){
+	   os_name = info[i].section("=",1,1).remove("\"").simplified();
+	   os_name[0] = os_name[0].toUpper(); //Capitalize first letter
+	   break;
+	 }
+       }
+    }
+    if(os_name.isEmpty()){ os_name = "Linux"; }
+  }
+  return os_name;
+}
 
 //OS-specific prefix(s)
 // NOTE: PREFIX, L_ETCDIR, L_SHAREDIR are defined in the OS-detect.pri project file and passed in

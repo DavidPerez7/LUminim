@@ -7,7 +7,8 @@ LUminim - Optimized Lumina Desktop Fork
 
 **Original Project**: [Lumina Desktop](https://github.com/lumina-desktop/lumina) @ https://lumina-desktop.org/
 
-**This Fork**: Community optimization by [DavidPerez7](https://github.com/DavidPerez7/LUminim)
+**This Fork**: Community optimization by [DavidPerez7](https://github.com/DavidPerez7/LUminim)  
+**Current Version**: `v0.5.0-beta` (The "Slim & Fast" Update)
 
 **Community Chat Channels:**
  - Telegram: ["Lumina Desktop" public channel](https://t.me/luminadesktop)
@@ -24,14 +25,20 @@ LUminim is a lightweight desktop environment based on Lumina, designed for minim
 
 ## 🎯 What's Different in LUminim?
 
-### Removed for Speed
-- ❌ **Window Manager**: Fluxbox (Removed in favor of Openbox-only engine)
-- ❌ **5 Desktop Plugins**: calendar, notepad, audioplayer, systemmonitor, rssreader (~110 KB)
-- ❌ **1 Panel Plugin**: alarm (~76 KB)
-- ❌ **2 Utilities**: lumina-info (~7 MB), lumina-pingcursor (~108 KB)
-- ❌ **Qt Libraries**: QtMultimedia, QtConcurrent, QtQuick, QtQml (~60 MB)
-- ❌ **Audio Files**: Login.ogg, Logout.ogg, low-battery.ogg (~113 KB)
-- ❌ **Color Themes**: Reduced from 12 to 3 (Lumina-Gold, Solarized-Dark, Grey-Dark)
+### Removed for Speed (Physical Deletion & Cleaned)
+- ❌ **Window Manager**: Fluxbox (Replaced by hardcoded Openbox engine)
+- ❌ **Multimedia**: `lumina-mediaplayer` (Removed to reduce QtMultimedia bloat)
+- ❌ **Archiver**: `lumina-archiver` (Removed in favor of system-native tools)
+- ❌ **Utilities**: `lumina-calculator`, `lumina-pdf`, `lumina-fileinfo`, `lumina-info`, `lumina-pingcursor`
+- ❌ **Plugins**: calendar, notepad, audioplayer, systemmonitor, rssreader, alarm
+- ❌ **Weight**: Login.ogg, Logout.ogg, low-battery.ogg and 9/12 color themes
+- ❌ **Qt Libraries**: QtMultimedia, QtConcurrent, QtQuick, QtQml (Reduced dependencies)
+
+### Performance Scraping (Kernel-Level Optimizations)
+- ✅ **CPU Throttling**: Panel timers reduced from 10ms to **150ms** (No more micro-stutters)
+- ✅ **Cache Locality**: Critical loops migrated from `QList` to **`QVector`** (Optimized for 1MB L2 Cache)
+- ✅ **SVG Caching**: Icons now pre-render to 24x24 Pixmaps (Massive RAM/CPU saving)
+- ✅ **Fast Build**: New `FASTBUILD=1` flag for `qmake` (Quick compilation on low-end CPUs)
 
 ### Optimizations Applied
 - ✅ **Compilation**: `-O3 -Ofast -march=native -flto=16` (Link-Time Optimization)

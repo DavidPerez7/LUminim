@@ -45,15 +45,17 @@ LPanel::LPanel(QSettings *file, QString scr, int num, QWidget *parent, bool rese
   //this->setAttribute(Qt::WA_X11DoNotAcceptFocus);
   this->setAttribute(Qt::WA_X11NetWmWindowTypeDock);
   this->setAttribute(Qt::WA_AlwaysShowToolTips);
-  this->setAttribute(Qt::WA_TranslucentBackground);
+  //LUminim: Disable native Qt transparency to reduce CPU overhead
+  this->setAttribute(Qt::WA_TranslucentBackground, false);
   //this->setAttribute(Qt::WA_NoSystemBackground);
-  this->setAutoFillBackground(false);
+  this->setAutoFillBackground(true);
   this->setWindowFlags(Qt::FramelessWindowHint | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
   //this->setWindowFlags(Qt::X11BypassWindowManagerHint | Qt::WindowStaysOnTopHint);
 
   this->setWindowTitle("LuminaPanel");
   this->setObjectName("LuminaPanelBackgroundWidget");
-  this->setStyleSheet("QToolButton::menu-indicator{ image: none; } QWidget#LuminaPanelBackgroundWidget{ background: transparent; }");
+  //LUminim: Force solid background instead of transparent
+  this->setStyleSheet("QToolButton::menu-indicator{ image: none; } QWidget#LuminaPanelBackgroundWidget{ background: palette(window); }");
   panelArea->setObjectName("LuminaPanelColor");
   layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0,0,0,0);

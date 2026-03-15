@@ -10,7 +10,7 @@
 LTaskManagerPlugin::LTaskManagerPlugin(QWidget *parent, QString id, bool horizontal) : LPPlugin(parent, id, horizontal){
   timer = new QTimer(this);
 	timer->setSingleShot(true);
-	timer->setInterval(10); // 1/100 second
+	timer->setInterval(150); // 1/100 second
 	connect(timer, SIGNAL(timeout()), this, SLOT(UpdateButtons()) ); 
   usegroups = true; //backwards-compatible default value
   if(id.contains("-nogroups")){ usegroups = false; }
@@ -33,10 +33,10 @@ void LTaskManagerPlugin::UpdateButtons(){
   QDateTime ctime = updating; //current thread time stamp
 
   //Get the current window list
-  QList<WId> winlist = LSession::handle()->XCB->WindowList();
+  QVector<WId> winlist = LSession::handle()->XCB->WindowList();
   // Ignore the windows which don't want to be listed
   for (int i = 0; i < winlist.length(); i++) {
-    QList<LXCB::WINDOWSTATE> states = LSession::handle()->XCB->WM_Get_Window_States(winlist[i]);
+    QVector<LXCB::WINDOWSTATE> states = LSession::handle()->XCB->WM_Get_Window_States(winlist[i]);
     for (int j = 0; j < states.length(); j++) {
       if (states[j] == LXCB::S_SKIP_TASKBAR) {
         // Skip taskbar window
@@ -54,7 +54,7 @@ void LTaskManagerPlugin::UpdateButtons(){
   //Now go through all the current buttons first
   for(int i=0; i<BUTTONS.length(); i++){
     //Get the windows managed in this button
-    QList<WId> WI = BUTTONS[i]->windows();
+    QVector<WId> WI = BUTTONS[i]->windows();
     bool updated=false;
     if(updating > ctime){ return; } //another thread kicked off already - stop this one
     //Loop over all the windows for this button

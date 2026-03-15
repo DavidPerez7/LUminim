@@ -329,7 +329,7 @@ void LSession::CleanupSession(){
   if(cleansession){
     //Close any open windows
     //qDebug() << " - Closing any open windows";
-    QList<WId> WL = XCB->WindowList(true);
+    QVector<WId> WL = XCB->WindowList(true);
     for(int i=0; i<WL.length(); i++){
       qDebug() << " - Closing window:" << XCB->WindowClass(WL[i]) << WL[i];
       XCB->CloseWindow(WL[i]);
@@ -547,13 +547,13 @@ void LSession::refreshWindowManager(){
 
 void LSession::updateDesktops(){
   qDebug() << " - Update Desktops";
-  QList<QScreen*> screens = QGuiApplication::screens();
+  QVector<QScreen*> screens = QGuiApplication::screens();
   int sC = screens.count();
   qDebug() << "  Screen Count:" << sC;
   qDebug() << "  DESKTOPS Length:" << DESKTOPS.length();
   if(sC<1){ return; } //stop here - no screens available temporarily (displayport/4K issue)
   screenRect = QRect(); //clear it
-  QList<QScreen*>::const_iterator it;
+  QVector<QScreen*>::const_iterator it;
   int i = 0;
   for(it = screens.constBegin(); it != screens.constEnd(); ++it, ++i) {
     screenRect = screenRect.united((*it)->geometry());
@@ -587,8 +587,8 @@ void LSession::updateDesktops(){
   }
 
   //First clean up any current desktops
-  QList<int> dnums; //keep track of which screens are already managed
-  QList<QRect> geoms;
+  QVector<int> dnums; //keep track of which screens are already managed
+  QVector<QRect> geoms;
   for(int i=0; i<DESKTOPS.length(); i++){
     if ( DESKTOPS[i]->Screen() < 0 || DESKTOPS[i]->Screen() >= sC || geoms.contains(screens.at(i)->geometry())) {
         //qDebug() << " - Close desktop:" << i;
@@ -608,7 +608,7 @@ void LSession::updateDesktops(){
 
   //Now add any new desktops
   QStringList allNames;
-  QList<QScreen*> scrns = QApplication::screens();
+  QVector<QScreen*> scrns = QApplication::screens();
   for(int i=0; i<sC; i++){
     allNames << scrns.at(i)->name();
     if(!dnums.contains(i) && !geoms.contains(screens.at(i)->geometry()) ){
@@ -643,7 +643,7 @@ void LSession::updateDesktops(){
 }
 
 void LSession::registerDesktopWindows(){
-  QList<WId> wins;
+  QVector<WId> wins;
   for(int i=0; i<DESKTOPS.length(); i++){
     wins << DESKTOPS[i]->backgroundID();
   }
@@ -658,7 +658,7 @@ void LSession::adjustWindowGeom(WId win, bool maximize){
   // Get the window location
   QRect geom = XCB->WindowGeometry(win, false);
   //Get the frame size
-  QList<int> frame = XCB->WindowFrameGeometry(win); //[top,bottom,left,right] sizes of the frame
+  QVector<int> frame = XCB->WindowFrameGeometry(win); //[top,bottom,left,right] sizes of the frame
   //Calculate the full geometry (window + frame)
   QRect fgeom = QRect(geom.x()-frame[2], geom.y()-frame[0], geom.width()+frame[2]+frame[3], geom.height()+frame[0]+frame[1]);
   if(DEBUG){
@@ -667,7 +667,7 @@ void LSession::adjustWindowGeom(WId win, bool maximize){
   if(geom.isNull()){ return; } //Could not get geometry for some reason
   //Get the available geometry for the screen the window is on
   QRect desk;
-  QList<QScreen *> screens = QGuiApplication::screens();
+  QVector<QScreen *> screens = QGuiApplication::screens();
   for(int i=0; i<DESKTOPS.length(); i++){
     if( screens.at(i)->geometry().contains(geom.center()) ){
       //Window is on this screen
@@ -763,7 +763,7 @@ QFileInfoList LSession::DesktopFiles(){
 }
 
 QRect LSession::screenGeom(int num){
-  QList<QScreen *> screens = QGuiApplication::screens();
+  QVector<QScreen *> screens = QGuiApplication::screens();
   if(num < 0 || num >= screens.count() ){ return QRect(); }
   QRect geom = screens.at(num)->geometry();
   return geom;
@@ -852,8 +852,8 @@ void LSession::RootSizeChange(){
   if(DESKTOPS.isEmpty() || screenRect.isNull()){ return; } //Initial setup not run yet
 
   QRect tmp;
-  QList<QScreen*> screens = QGuiApplication::screens();
-  QList<QScreen*>::const_iterator it;
+  QVector<QScreen*> screens = QGuiApplication::screens();
+  QVector<QScreen*>::const_iterator it;
   for(it = screens.constBegin(); it != screens.constEnd(); ++it) {
     tmp = tmp.united( (*it)->geometry() );
   }
@@ -865,7 +865,7 @@ void LSession::RootSizeChange(){
 
 void LSession::WindowPropertyEvent(){
   if(DEBUG){ qDebug() << "Window Property Event"; }
-  QList<WId> newapps = XCB->WindowList();
+  QVector<WId> newapps = XCB->WindowList();
   if(RunningApps.length() < newapps.length()){
     //New Window found
     //qDebug() << "New window found";
@@ -892,10 +892,10 @@ void LSession::WindowPropertyEvent(WId win){
     if(DEBUG){ qDebug() << "Single-window property event"; }
     /*if( XCB->WindowClass(win).contains("VirtualBox")){
       qDebug() << "Found VirtualBox Window:";
-      QList<LXCB::WINDOWSTATE> states = XCB->WM_Get_Window_States(win);
+      QVector<LXCB::WINDOWSTATE> states = XCB->WM_Get_Window_States(win);
       if(states.contains(LXCB::S_FULLSCREEN) && !states.contains(LXCB::S_HIDDEN)){
        qDebug() << "Adjusting VirtualBox Window (fullscreen)";
-        XCB->WM_Set_Window_Type(win, QList<LXCB::WINDOWTYPE>() << LXCB::T_NORMAL << LXCB::T_UTILITY );
+        XCB->WM_Set_Window_Type(win, QVector<LXCB::WINDOWTYPE>() << LXCB::T_NORMAL << LXCB::T_UTILITY );
         XCB->RestoreWindow(win);
       }
     }*/
@@ -962,7 +962,7 @@ void LSession::unregisterVisualTray(WId visualTray){
   }
 }
 
-QList<WId> LSession::currentTrayApps(WId visualTray){
+QVector<WId> LSession::currentTrayApps(WId visualTray){
   if(visualTray==VisualTrayID){
     //Check the validity of all the current tray apps (make sure nothing closed erratically)
     for(int i=0; i<RunningTrayApps.length(); i++){
@@ -972,7 +972,7 @@ QList<WId> LSession::currentTrayApps(WId visualTray){
   }else if( registerVisualTray(visualTray) ){
     return RunningTrayApps;
   }else{
-    return QList<WId>();
+    return QVector<WId>();
   }
 }
 
@@ -995,7 +995,7 @@ void LSession::stopSystemTray(bool detachall){
   qDebug() << "Stopping system tray...";
   TrayStopping = true; //make sure the internal list does not modified during this
   //Close all the running Tray Apps
-  QList<WId> tmpApps = RunningTrayApps;
+  QVector<WId> tmpApps = RunningTrayApps;
   RunningTrayApps.clear(); //clear this ahead of time so tray's do not attempt to re-access the apps
   if(!detachall){
     for(int i=0; i<tmpApps.length(); i++){

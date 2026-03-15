@@ -82,23 +82,36 @@ We use a simple `MAJOR.MINOR` scheme to reflect incremental improvements.
 ## Reporting Issues (planned)
 This repo is under active development. For now, the best way to report issues is via GitHub Issues in this repository; mark reports with `void-linux` or `optimization` where appropriate.
 
-## Building / Installing (current status)
-LUminim is not yet distributed as a packaged `.deb`/`.xbps`/`.rpm` for easy installs. For now, the only supported way to run it is by compiling from source.
-
+## Build & Install
 ```bash
-cd src-qt5/core
-qmake
+qmake -r CONFIG+=FASTBUILD
 make -j$(nproc)
 sudo make install
 ```
 
-This will install LUminim into your system, but there is no formal package manager support yet. Packaging is planned for future updates.
+---
 
-### Notes
-- This project is currently distributed as source only; there is no binary package (deb/xbps/rpm) yet.
-- See `install.sh` for distribution-specific dependency notes.
+## 🗺️ LUminim Roadmap (The Pentium T2310 Path)
 
-Packaging and distribution (deb/xbps/rpm) is planned for future updates.
+### Phase 1: Surgical Cleanup (Current)
+- [x] **OS Purge**: Remove all non-Linux backends (FreeBSD, OpenBSD, etc.).
+- [x] **Weight Reduction**: Delete `dev-tools` and unfinished `lumina-desktop-unified`.
+- [x] **Data Refactor**: Complete migration from `QList` to `QVector` in X11 core.
+
+### Phase 2: Build & Runtime Optimization (In-Progress)
+- [x] **PCH Implementation**: Global Precompiled Headers to slash compile times.
+- [ ] **LTO Tuning**: Fine-tune Link-Time Optimization for minimal binary size.
+- [ ] **Event Throttling**: Audit all `QTimer` instances to ensure >150ms intervals.
+- [ ] **Icon Pre-rendering**: Move SVG rendering to a background thread with static cache.
+
+### Phase 3: Hardware Specifics (Upcoming)
+- [ ] **Pentium T2310 Profile**: SSE3/L2-Cache specific compiler flags.
+- [ ] **Memory Pressure Handling**: Implement aggressive cache clearing when RAM < 128MB.
+- [ ] **Openbox Integration**: Hardcode Openbox as the only supported WM (Remove Fluxbox logic).
+
+### Phase 4: Release 1.0 "Slim"
+- [ ] **Zero-Bloat Installer**: Minimal `install.sh` for Void Linux/Alpine.
+- [ ] **Binary Packaging**: `.xbps` (Void) and `.apk` (Alpine) support.
 
 ---
 

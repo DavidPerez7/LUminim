@@ -34,8 +34,6 @@ private:
 	}
 	
 signals:
-
-	void wheelScroll(int change);
 	
 public:
 	LTBWidget(QWidget* parent) : QToolButton(parent){

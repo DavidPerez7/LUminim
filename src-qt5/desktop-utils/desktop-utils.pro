@@ -1,3 +1,4 @@
+PRECOMPILED_HEADER = ../../lumina_pch.h
 include("../OS-detect.pri")
 
 TEMPLATE = subdirs

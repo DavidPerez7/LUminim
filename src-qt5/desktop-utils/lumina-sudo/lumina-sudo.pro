@@ -1,3 +1,4 @@
+PRECOMPILED_HEADER = ../../lumina_pch.h
 QT       += core gui widgets
 
 TARGET = lumina-sudo

@@ -1,3 +1,4 @@
+PRECOMPILED_HEADER = ../../lumina_pch.h
 include("$${PWD}/../../OS-detect.pri")
 
 QT       += core gui widgets svg printsupport

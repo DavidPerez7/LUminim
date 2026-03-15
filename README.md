@@ -25,6 +25,7 @@ LUminim is a lightweight desktop environment based on Lumina, designed for minim
 ## 🎯 What's Different in LUminim?
 
 ### Removed for Speed
+- ❌ **Window Manager**: Fluxbox (Removed in favor of Openbox-only engine)
 - ❌ **5 Desktop Plugins**: calendar, notepad, audioplayer, systemmonitor, rssreader (~110 KB)
 - ❌ **1 Panel Plugin**: alarm (~76 KB)
 - ❌ **2 Utilities**: lumina-info (~7 MB), lumina-pingcursor (~108 KB)

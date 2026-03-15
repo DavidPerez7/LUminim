@@ -207,27 +207,12 @@ void LSession::start(bool unified){
 
  if(!unified){
   QSettings sessionsettings("lumina-desktop","sessionsettings");
-  QString WM = sessionsettings.value("WindowManager", "fluxbox").toString();
   QString confDir = QString( getenv("XDG_CONFIG_HOME"))+"/lumina-desktop";
-  //Window Manager First
-  qDebug() << "Starting WM:" << WM;
-  if(WM=="fluxbox" || WM.endsWith("/fluxbox") || WM.simplified().isEmpty() ){
-	  // FLUXBOX BUG BYPASS: if the ~/.fluxbox dir does not exist, it will ignore the given config file
-	  if( !LUtils::isValidBinary("fluxbox") ){
-	    qDebug() << "[INCOMPLETE LUMINA INSTALLATION] fluxbox binary is missing - cannot continue";
-	  }else{
-	    QStringList args; args << "-rc" << confDir+"/fluxbox-init -no-slit" << "-no-toolbar";
-	    startProcess("wm", "fluxbox", args, QStringList() << confDir+"/fluxbox-init" << confDir+"/fluxbox-keys");
-	  }
-  } else if ( WM.split("/").last() == "openbox" ) {
-    setupOpenboxConfig();
-    startProcess("wm", "openbox", QStringList()<< "--config-file" << confDir+"/openbox-rc.xml", QStringList() << confDir+"/openbox-rc.xml");
-  } else {
-	if(!LUtils::isValidBinary(WM)){
-	  exit(1);
-	}
-	startProcess("wm", WM);
-  }
+  //Window Manager First (Openbox-Only for LUminim)
+  qDebug() << "Starting WM: Openbox (LUminim Engine)";
+  setupOpenboxConfig();
+  startProcess("wm", "openbox", QStringList()<< "--config-file" << confDir+"/openbox-rc.xml", QStringList() << confDir+"/openbox-rc.xml");
+
   //Compositing manager
   setupCompositor(true);
   //Desktop Next

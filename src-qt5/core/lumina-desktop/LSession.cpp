@@ -276,8 +276,7 @@ void LSession::setupSession(){
     QString confdir = sessionsettings->fileName().section("/",0,-2);
     watcherChange(sessionsettings->fileName() );
     watcherChange( confdir+"/desktopsettings.conf" );
-    watcherChange( confdir+"/fluxbox-init" );
-    watcherChange( confdir+"/fluxbox-keys" );
+    watcherChange( confdir+"/openbox-rc.xml" );
     watcherChange( confdir+"/favorites.list" );
     //Try to watch the localized desktop folder too
     watcherChange( LUtils::standardDirectory(LUtils::Desktop) );
@@ -466,7 +465,7 @@ void LSession::reloadIconTheme(){
 
 void LSession::watcherChange(QString changed){
   if(DEBUG){ qDebug() << "Session Watcher Change:" << changed; }
-  //if(changed.endsWith("fluxbox-init") || changed.endsWith("fluxbox-keys")){ refreshWindowManager(); }
+  if(changed.endsWith("openbox-rc.xml")){ refreshWindowManager(); }
   if(changed.endsWith("sessionsettings.conf") ){
     sessionsettings->sync();
     //qDebug() << "Session Settings Changed";

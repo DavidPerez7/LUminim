@@ -87,16 +87,10 @@ desktop.path = $${L_SESSDIR}
 desktop.files = Lumina-DE.desktop
 
 icons.files = Lumina-DE.svg
-
-fluxconf.files = fluxboxconf/fluxbox-init-rc \
-			fluxboxconf/fluxbox-keys
-fluxconf.path = $${L_SHAREDIR}/lumina-desktop/
-
-fluxtheme.files = fluxboxconf/theme.cfg
-fluxtheme.path = $${L_SHAREDIR}/lumina-desktop/ 
-
+# LUminim: Removed Fluxbox config/theme installation
 defaults.files = defaults/luminaDesktop.conf \
-		defaults/compton.conf
+		defaults/compton.conf \
+		defaults/openbox-rc.xml
 defaults.path = $${L_SHAREDIR}/lumina-desktop/
 
 conf.path = $${L_ETCDIR}

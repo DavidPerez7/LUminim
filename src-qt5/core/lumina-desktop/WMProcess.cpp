@@ -37,8 +37,6 @@ void WMProcess::startWM(){
 void WMProcess::stopWM(){
   if(isRunning()){
     inShutdown = true;
-    //QProcess::startDetached("fluxbox-remote closeallwindows");
-    //ssaver->kill();
     this->kill();
     if(!this->waitForFinished(10000)){ this->terminate(); };
   }else{
@@ -59,8 +57,8 @@ void WMProcess::restartWM(){
 
 void WMProcess::updateWM(){
   if(isRunning()){
-    qDebug() << "Updating WM";
-    ::kill(this->pid(), SIGUSR2); //send fluxbox the signal to reload it's configuration
+    qDebug() << "Updating WM (Openbox)";
+    ::kill(this->pid(), SIGHUP); //send openbox the signal to reconfigure (SIGHUP)
   }
 }
 // =======================
@@ -71,24 +69,11 @@ bool WMProcess::isRunning(){
 }
 
 QString WMProcess::setupWM(){
-  QString WM = LSession::handle()->sessionSettings()->value("WindowManager", "fluxbox").toString();
-  QString cmd="echo WM Disabled";
-  //leave the option to add other window managers here (for testing purposes)
-  if(WM=="fluxbox"){
-    QString confDir = QString( getenv("XDG_CONFIG_HOME"))+"/lumina-desktop";
-    if(!QFile::exists(confDir)){ QDir dir(confDir); dir.mkpath(confDir); }
-    if(!QFile::exists(confDir+"/fluxbox-init")){
-      QFile::copy(":/fluxboxconf/fluxbox-init-rc",confDir+"/fluxbox-init");
-      QFile::setPermissions(confDir+"/fluxbox-init", QFile::ReadOwner | QFile::WriteOwner | QFile::ReadUser | QFile::ReadOther | QFile::ReadGroup);
-    }
-    // FLUXBOX BUG BYPASS: if the ~/.fluxbox dir does not exist, it will ignore the given config file
-    if(!QFile::exists(QDir::homePath()+"/.fluxbox")){
-      QDir dir; dir.mkpath(QDir::homePath()+"/.fluxbox");
-    }
-    cmd = "fluxbox -rc "+confDir+"/fluxbox-init -no-slit -no-toolbar";
-  }else {
-    cmd = WM;
-  }
+  QString confDir = QString( getenv("XDG_CONFIG_HOME"))+"/lumina-desktop";
+  if(!QDir(confDir).exists()){ QDir().mkpath(confDir); }
+  
+  // LUminim Engine: Openbox Only
+  QString cmd = "openbox --config-file "+confDir+"/openbox-rc.xml";
   return cmd;
 }
 

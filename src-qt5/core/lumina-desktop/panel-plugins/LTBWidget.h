@@ -62,8 +62,8 @@ public slots:
 
 protected:
 	void wheelEvent(QWheelEvent *event){
-	  int change = event->delta()/120; // 1/15th of a rotation (delta/120) is usually one "click" of the wheel
-	  emit wheelScroll(change);
+	  // Explicitly swallow wheel input to avoid workspace switching via mouse wheel.
+	  event->accept();
 	}
 
 };

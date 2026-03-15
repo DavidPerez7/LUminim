@@ -61,6 +61,40 @@ bool LSession::setupOpenboxConfig(){
       QFile::copy(fallback, set);
     }
   }
+
+  // Force-disable workspace switching via mouse wheel in Openbox config.
+  if(QFile::exists(set)){
+    QStringList in = LUtils::readFile(set);
+    QStringList out;
+    QStringList block;
+    bool inMouseBind = false;
+    for(int i=0; i<in.length(); i++){
+      QString line = in[i];
+      if(!inMouseBind && line.contains("<mousebind")){
+        inMouseBind = true;
+        block.clear();
+      }
+      if(inMouseBind){
+        block << line;
+        if(line.contains("</mousebind>")){
+          QString joined = block.join("\n");
+          bool wheelBind = joined.contains("button=\"Up\"") || joined.contains("button=\"Down\"");
+          bool desktopSwitch = joined.contains("DesktopPrevious") || joined.contains("DesktopNext") || joined.contains("GoToDesktop");
+          if(!(wheelBind && desktopSwitch)){
+            out << block;
+          }
+          block.clear();
+          inMouseBind = false;
+        }
+      }else{
+        out << line;
+      }
+    }
+    if(!out.isEmpty()){
+      LUtils::writeFile(set, out, true);
+    }
+  }
+
   return true;
 }
 

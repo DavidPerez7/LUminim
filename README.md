@@ -26,6 +26,7 @@ LUminim is a lightweight desktop environment based on Lumina, designed for minim
 ## 🎯 What's Different in LUminim?
 
 ### Removed for Speed (Physical Deletion & Cleaned)
+- ❌ **OS Backends**: FreeBSD, OpenBSD, NetBSD, DragonFly, Solaris (Surgical 100% Linux-only)
 - ❌ **Window Manager**: Fluxbox (Replaced by hardcoded Openbox engine)
 - ❌ **Multimedia**: `lumina-mediaplayer` (Removed to reduce QtMultimedia bloat)
 - ❌ **Archiver**: `lumina-archiver` (Removed in favor of system-native tools)
@@ -36,6 +37,7 @@ LUminim is a lightweight desktop environment based on Lumina, designed for minim
 
 ### Performance Scraping (Kernel-Level Optimizations)
 - ✅ **CPU Throttling**: Panel timers reduced from 10ms to **150ms** (No more micro-stutters)
+- ✅ **Memory Alignment**: Migrated X11 Window/State lists to **`QVector<WId>`** (Contiguous memory access)
 - ✅ **Cache Locality**: Critical loops migrated from `QList` to **`QVector`** (Optimized for 1MB L2 Cache)
 - ✅ **SVG Caching**: Icons now pre-render to 24x24 Pixmaps (Massive RAM/CPU saving)
 - ✅ **Fast Build**: New `FASTBUILD=1` flag for `qmake` (Quick compilation on low-end CPUs)

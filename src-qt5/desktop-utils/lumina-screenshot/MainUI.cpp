@@ -300,8 +300,8 @@ void MainUI::mouseReleaseEvent(QMouseEvent *ev){
     }else{
       //In the middle of selecting a window to take a screenshot
       //  Get the window underneath the mouse click and take the screenshot
-      QList<WId> wins = XCB->WindowList();
-      QList<WId> stack = XCB->WM_Get_Client_List(true);
+      QVector<WId> wins = XCB->WindowList();
+      QVector<WId> stack = XCB->WM_Get_Client_List(true);
       cwin = 0;
       //qDebug() << "Try to select window:" << ev->globalPos() << ev->pos() << QCursor::pos();
       for(int i=stack.length()-1; i>=0 && cwin==0; i--){ //work top->bottom in the stacking order

@@ -32,7 +32,7 @@ public:
 	~LTaskButton();
 
 	//Window Information
-	QList<WId> windows();
+	QVector<WId> windows();
 	QString classname();
 	bool isActive();
 
@@ -41,7 +41,7 @@ public:
 	void rmWindow(WId win); //Remove a window from this button
 
 private:
-	QList<LWinInfo> WINLIST;
+	QVector<LWinInfo> WINLIST;
 	int LWINLIST;
 	QMenu *actMenu; // action menu (custom context menu)
 	QMenu *winMenu; // window menu (if more than 1)

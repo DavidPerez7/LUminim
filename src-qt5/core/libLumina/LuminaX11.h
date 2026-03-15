@@ -114,14 +114,14 @@ public:
 
 	//== Main Interface functions ==
 	// General Information
-	QList<WId> WindowList(bool rawlist = false); //list all non-Lumina windows (rawlist -> all workspaces)
+	QVector<WId> WindowList(bool rawlist = false); //list all non-Lumina windows (rawlist -> all workspaces)
 	unsigned int CurrentWorkspace();
 	unsigned int NumberOfWorkspaces();
 	WId ActiveWindow(); //fetch the ID for the currently active window
 
 	//Session Modification
 	bool CheckDisableXinerama(); //returns true if Xinerama was initially set but now disabled
-	void RegisterVirtualRoots(QList<WId> roots);
+	void RegisterVirtualRoots(QVector<WId> roots);
 	void SetCurrentWorkspace(int);
 	//Display Power Management System (DPMS)
 	void enableDPMS();
@@ -131,7 +131,7 @@ public:
 	QString WindowClass(WId);
 	unsigned int WindowWorkspace(WId); //The workspace the window is on
 	QRect WindowGeometry(WId win, bool includeFrame = true); //the geometry of the window (frame excluded)
-	QList<int> WindowFrameGeometry(WId win); //Returns: [top,bottom,left,right] sizes of the frame
+	QVector<int> WindowFrameGeometry(WId win); //Returns: [top,bottom,left,right] sizes of the frame
 	LXCB::WINDOWVISIBILITY WindowState(WId win); //Visible state of window
 	QString WindowVisibleIconName(WId win); //_NET_WM_VISIBLE_ICON_NAME
 	QString WindowIconName(WId win); //_NET_WM_ICON_NAME
@@ -227,7 +227,7 @@ public:
 	void WM_Set_Root_Supported(); //set the atom list of supported features on the root window
 	// _NET_CLIENT_LIST
 	// Note: client list ordered oldest->newest, stacking list ordered bottom->top
-	QList<WId> WM_Get_Client_List(bool stacking = false);
+	QVector<WId> WM_Get_Client_List(bool stacking = false);
 	void WM_Set_Client_List(QList<WId> list, bool stacking=false);
 
 	// _NET_NUMBER_OF_DESKTOPS
@@ -336,24 +336,24 @@ public:
 
 	// _NET_WM_WINDOW_TYPE
 	// Note: While this returns a list, they are ordered by priority for WM usage (use the first one known about)
-	QList<LXCB::WINDOWTYPE> WM_Get_Window_Type(WId win);
-	void WM_Set_Window_Type(WId win, QList<LXCB::WINDOWTYPE> list);
+	QVector<LXCB::WINDOWTYPE> WM_Get_Window_Type(WId win);
+	void WM_Set_Window_Type(WId win, QVector<LXCB::WINDOWTYPE> list);
 
 	// _NET_WM_STATE
-	QList<LXCB::WINDOWSTATE> WM_Get_Window_States(WId win);
-	void WM_Set_Window_States(WId win, QList<LXCB::WINDOWSTATE> list);
+	QVector<LXCB::WINDOWSTATE> WM_Get_Window_States(WId win);
+	void WM_Set_Window_States(WId win, QVector<LXCB::WINDOWSTATE> list);
 
 	// _NET_WM_ALLOWED_ACTIONS
-	QList<LXCB::WINDOWACTION> WM_Get_Window_Actions(WId win);
-	void WM_Set_Window_Actions(WId win, QList<LXCB::WINDOWACTION> list);
+	QVector<LXCB::WINDOWACTION> WM_Get_Window_Actions(WId win);
+	void WM_Set_Window_Actions(WId win, QVector<LXCB::WINDOWACTION> list);
 
 	// _NET_WM_STRUT
-	QList<unsigned int> WM_Get_Window_Strut(WId win); //Returns: [left,right,top,bottom] margins in pixels (always length 4)
-	void WM_Set_Window_Strut(WId win, QList<unsigned int> margins); //Input: [left, right, top, bottom] - must be length 4
+	QVector<unsigned int> WM_Get_Window_Strut(WId win); //Returns: [left,right,top,bottom] margins in pixels (always length 4)
+	void WM_Set_Window_Strut(WId win, QVector<unsigned int> margins); //Input: [left, right, top, bottom] - must be length 4
 
 	// _NET_WM_STRUT_PARTIAL
-	QList<strut_geom> WM_Get_Window_Strut_Partial(WId win); //Returns: [left,right,top,bottom] struts
-	void WM_Set_Window_Strut_Partial(WId win, QList<strut_geom> struts); //Input: [left,right,top,bottom] - must be length 4
+	QVector<strut_geom> WM_Get_Window_Strut_Partial(WId win); //Returns: [left,right,top,bottom] struts
+	void WM_Set_Window_Strut_Partial(WId win, QVector<strut_geom> struts); //Input: [left,right,top,bottom] - must be length 4
 
 	// _NET_WM_ICON_GEOMETRY
 	QRect WM_Get_Icon_Geometry(WId win);
@@ -387,7 +387,7 @@ public:
 	//void WM_Set_User_Time_Window(WId win, WId utwin);
 
 	// _NET_FRAME_EXTENTS
-	QList<unsigned int> WM_Get_Frame_Extents(WId win); //Returns: [left,right,top,bottom] margins in pixels (always length 4)
+	QVector<unsigned int> WM_Get_Frame_Extents(WId win); //Returns: [left,right,top,bottom] margins in pixels (always length 4)
 	void WM_Set_Frame_Extents(WId win, QList<unsigned int> margins); //Input: [left, right, top, bottom] - must be length 4
 
 	// _NET_WM_OPAQUE_REGION
@@ -407,7 +407,7 @@ public:
 	//void WM_Set_Sync_Request_Counter(WId win, uint64_t count);
 
 	// _NET_WM_FULLSCREEN_MONITORS
-	QList<unsigned int> WM_Get_Fullscreen_Monitors(WId win); //Returns: [top,bottom,left,right] monitor numbers for window to use when fullscreen
+	QVector<unsigned int> WM_Get_Fullscreen_Monitors(WId win); //Returns: [top,bottom,left,right] monitor numbers for window to use when fullscreen
 	void WM_Set_Fullscreen_Montors(WId win, QList<unsigned int> list); //Input: [top,bottom,left,right] monitor numbers
 
 	// _NET_WM_CM_S(n)

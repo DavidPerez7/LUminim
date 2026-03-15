@@ -84,7 +84,7 @@ void LSysTray::checkAll(){
   //Make sure this tray should handle the windows (was not disabled in the backend)
   bool TrayRunning = LSession::handle()->registerVisualTray(this->winId());
   //qDebug() << "System Tray: Check tray apps";
-  QList<WId> wins = LSession::handle()->currentTrayApps(this->winId());
+  QVector<WId> wins = LSession::handle()->currentTrayApps(this->winId());
   for(int i=0; i<trayIcons.length(); i++){
     int index = wins.indexOf(trayIcons[i]->appID());
     if(index < 0){

@@ -80,9 +80,9 @@ void LXCB::createWMAtoms(){
 }
 
 // === WindowList() ===
-QList<WId> LXCB::WindowList(bool rawlist){
+QVector<WId> LXCB::WindowList(bool rawlist){
   if(DEBUG){ qDebug() << "XCB: WindowList()" << rawlist; }
-  QList<WId> output;
+  QVector<WId> output;
   //qDebug() << "Get Client list cookie";
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_client_list_unchecked( &EWMH, 0);
   xcb_ewmh_get_windows_reply_t winlist;
@@ -153,12 +153,12 @@ bool LXCB::CheckDisableXinerama(){
 }
 
 // === RegisterVirtualRoots() ===
-void LXCB::RegisterVirtualRoots(QList<WId> roots){
+void LXCB::RegisterVirtualRoots(QVector<WId> roots){
   if(DEBUG){ qDebug() << "XCB: RegisterVirtualRoots()"; }
   //First convert the QList into the proper format
   xcb_window_t *list = new xcb_window_t[ roots.length() ];
   for(int i=0; i<roots.length(); i++){
-    list[i] = roots[i]; //move from the QList to the array
+    list[i] = roots[i]; //move from the QVector to the array
   }
   //Now set the property
   xcb_ewmh_set_virtual_roots(&EWMH, 0, roots.length(), list);
@@ -280,10 +280,10 @@ QRect LXCB::WindowGeometry(WId win, bool includeFrame){
 }
 
 // === WindowFrameGeometry() ===
-QList<int> LXCB::WindowFrameGeometry(WId win){
+QVector<int> LXCB::WindowFrameGeometry(WId win){
   if(DEBUG){ qDebug() << "XCB: WindowFrameGeometry()"; }
   //Returns: [top, bottom, left, right] sizes for the frame
-  QList<int> geom;
+  QVector<int> geom;
   if(win!=0){
     xcb_get_property_cookie_t cookie = xcb_ewmh_get_frame_extents_unchecked(&EWMH, win);
     if(cookie.sequence != 0){
@@ -1498,8 +1498,8 @@ void LXCB::WM_Set_Root_Supported(){
 }
 
 // _NET_CLIENT_LIST
-QList<WId> LXCB::WM_Get_Client_List(bool stacking){
-  QList<WId> out;
+QVector<WId> LXCB::WM_Get_Client_List(bool stacking){
+  QVector<WId> out;
   if(stacking){
     xcb_get_property_cookie_t cookie = xcb_ewmh_get_client_list_stacking(&EWMH, QX11Info::appScreen());
     xcb_ewmh_get_windows_reply_t reply;
@@ -1849,10 +1849,10 @@ void LXCB::WM_Set_Desktop(WId win, int num){
 }
 
 // _NET_WM_WINDOW_TYPE
-QList<LXCB::WINDOWTYPE> LXCB::WM_Get_Window_Type(WId win){
+QVector<LXCB::WINDOWTYPE> LXCB::WM_Get_Window_Type(WId win){
   // Note: This will silently discard any unknown/non-standard window type flags
   // The client should ensure to set at least one standardized type flag per the specifications.
-  QList<LXCB::WINDOWTYPE> out;
+  QVector<LXCB::WINDOWTYPE> out;
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_window_type_unchecked(&EWMH, win);
   xcb_ewmh_get_atoms_reply_t reply;
   if(1==xcb_ewmh_get_wm_window_type_reply(&EWMH, cookie, &reply, NULL) ){
@@ -1876,7 +1876,7 @@ QList<LXCB::WINDOWTYPE> LXCB::WM_Get_Window_Type(WId win){
   return out;
 }
 
-void LXCB::WM_Set_Window_Type(WId win, QList<LXCB::WINDOWTYPE> list){
+void LXCB::WM_Set_Window_Type(WId win, QVector<LXCB::WINDOWTYPE> list){
   //Convert to the XCB format
   xcb_atom_t array[list.length()];
   for(int i=0; i<list.length(); i++){
@@ -1916,8 +1916,8 @@ void LXCB::WM_Set_Window_Type(WId win, QList<LXCB::WINDOWTYPE> list){
 }
 
 // _NET_WM_STATE
-QList<LXCB::WINDOWSTATE> LXCB::WM_Get_Window_States(WId win){
-  QList<LXCB::WINDOWSTATE> out;
+QVector<LXCB::WINDOWSTATE> LXCB::WM_Get_Window_States(WId win){
+  QVector<LXCB::WINDOWSTATE> out;
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_state_unchecked(&EWMH, win);
   xcb_ewmh_get_atoms_reply_t reply;
   if(1==xcb_ewmh_get_wm_state_reply(&EWMH, cookie, &reply, NULL) ){
@@ -1940,7 +1940,7 @@ QList<LXCB::WINDOWSTATE> LXCB::WM_Get_Window_States(WId win){
   return out;
 }
 
-void LXCB::WM_Set_Window_States(WId win, QList<LXCB::WINDOWSTATE> list){
+void LXCB::WM_Set_Window_States(WId win, QVector<LXCB::WINDOWSTATE> list){
   //Convert to the XCB format
   xcb_atom_t array[list.length()];
   for(int i=0; i<list.length(); i++){
@@ -1978,8 +1978,8 @@ void LXCB::WM_Set_Window_States(WId win, QList<LXCB::WINDOWSTATE> list){
 }
 
 // _NET_WM_ALLOWED_ACTIONS
-QList<LXCB::WINDOWACTION> LXCB::WM_Get_Window_Actions(WId win){
-  QList<LXCB::WINDOWACTION> out;
+QVector<LXCB::WINDOWACTION> LXCB::WM_Get_Window_Actions(WId win){
+  QVector<LXCB::WINDOWACTION> out;
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_allowed_actions_unchecked(&EWMH, win);
   xcb_ewmh_get_atoms_reply_t reply;
   if(1==xcb_ewmh_get_wm_allowed_actions_reply(&EWMH, cookie, &reply, NULL) ){
@@ -2001,7 +2001,7 @@ QList<LXCB::WINDOWACTION> LXCB::WM_Get_Window_Actions(WId win){
   return out;
 }
 
-void LXCB::WM_Set_Window_Actions(WId win, QList<LXCB::WINDOWACTION> list){
+void LXCB::WM_Set_Window_Actions(WId win, QVector<LXCB::WINDOWACTION> list){
   //Convert to the XCB format
   xcb_atom_t array[list.length()];
   for(int i=0; i<list.length(); i++){
@@ -2037,9 +2037,9 @@ void LXCB::WM_Set_Window_Actions(WId win, QList<LXCB::WINDOWACTION> list){
 }
 
 // _NET_WM_STRUT
-QList<unsigned int> LXCB::WM_Get_Window_Strut(WId win){
+QVector<unsigned int> LXCB::WM_Get_Window_Strut(WId win){
   //Returns: [left,right,top,bottom] margins in pixels (always length 4)
-  QList<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output list
+  QVector<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output list
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_strut_unchecked(&EWMH, win);
   xcb_ewmh_get_extents_reply_t reply;
   if(1==xcb_ewmh_get_wm_strut_reply(&EWMH, cookie, &reply, NULL) ){
@@ -2051,16 +2051,16 @@ QList<unsigned int> LXCB::WM_Get_Window_Strut(WId win){
   return out;
 }
 
-void LXCB::WM_Set_Window_Strut(WId win, QList<unsigned int> margins){
+void LXCB::WM_Set_Window_Strut(WId win, QVector<unsigned int> margins){
   //Input: [left, right, top, bottom] - must be length 4
   while(margins.length()<4){ margins << 0; }
   xcb_ewmh_set_wm_strut(&EWMH, win, margins[0], margins[1], margins[2], margins[3]);
 }
 
 // _NET_WM_STRUT_PARTIAL
-QList<strut_geom> LXCB::WM_Get_Window_Strut_Partial(WId win){
+QVector<strut_geom> LXCB::WM_Get_Window_Strut_Partial(WId win){
   //Returns: [left,right,top,bottom] struts
-  QList<strut_geom> out; out << strut_geom() << strut_geom() << strut_geom() << strut_geom();
+  QVector<strut_geom> out; out << strut_geom() << strut_geom() << strut_geom() << strut_geom();
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_strut_partial_unchecked(&EWMH, win);
   xcb_ewmh_wm_strut_partial_t reply;
   if(1==xcb_ewmh_get_wm_strut_partial_reply(&EWMH, cookie, &reply, NULL) ){
@@ -2080,7 +2080,7 @@ QList<strut_geom> LXCB::WM_Get_Window_Strut_Partial(WId win){
   return out;
 }
 
-void LXCB::WM_Set_Window_Strut_Partial(WId win, QList<strut_geom> struts){
+void LXCB::WM_Set_Window_Strut_Partial(WId win, QVector<strut_geom> struts){
   //Input: [left,right,top,bottom] - must be length 4
   while(struts.length() < 4){ struts << strut_geom(); }
   //Convert to the XCB input format
@@ -2180,9 +2180,9 @@ void LXCB::WM_Set_User_Time_Window(WId win, WId utwin){
 }*/
 
 // _NET_FRAME_EXTENTS
-QList<unsigned int> LXCB::WM_Get_Frame_Extents(WId win){
+QVector<unsigned int> LXCB::WM_Get_Frame_Extents(WId win){
   //Returns: [left,right,top,bottom] margins in pixels (always length 4)
-  QList<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output list
+  QVector<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output list
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_frame_extents_unchecked(&EWMH, win);
   xcb_ewmh_get_extents_reply_t reply;
   if(1==xcb_ewmh_get_frame_extents_reply(&EWMH, cookie, &reply, NULL) ){
@@ -2223,9 +2223,9 @@ uint64_t LXCB::WM_Get_Sync_Request_Counter(WId win){
 }*/
 
 // _NET_WM_FULLSCREEN_MONITORS
-QList<unsigned int> LXCB::WM_Get_Fullscreen_Monitors(WId win){
+QVector<unsigned int> LXCB::WM_Get_Fullscreen_Monitors(WId win){
   //Returns: [top,bottom,left,right] monitor numbers for window to use when fullscreen
-  QList<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output array
+  QVector<unsigned int> out; out << 0 << 0 << 0 << 0; //init the output array
   xcb_get_property_cookie_t cookie = xcb_ewmh_get_wm_fullscreen_monitors_unchecked(&EWMH, win);
   xcb_ewmh_get_wm_fullscreen_monitors_reply_t reply;
   if(1==xcb_ewmh_get_wm_fullscreen_monitors_reply(&EWMH, cookie, &reply, NULL) ){

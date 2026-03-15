@@ -343,7 +343,7 @@ void LDesktop::UpdateMenu(bool fast){
 void LDesktop::UpdateWinMenu(){
   winMenu->clear();
   //Get the current list of windows
-  QList<WId> wins = LSession::handle()->XCB->WindowList();
+  QVector<WId> wins = LSession::handle()->XCB->WindowList();
   //Now add them to the menu
   for(int i=0; i<wins.length(); i++){
     LWinInfo info(wins[i]);

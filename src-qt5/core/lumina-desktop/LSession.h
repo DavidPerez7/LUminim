@@ -61,7 +61,7 @@ public:
 	void setupSession();
 
 	//Public System Tray Functions
-	QList<WId> currentTrayApps(WId visualTray);
+	QVector<WId> currentTrayApps(WId visualTray);
 	bool registerVisualTray(WId);
 	void unregisterVisualTray(WId);
 
@@ -113,7 +113,7 @@ public:
 
 private:
 	//WMProcess *WM;
-	QList<LDesktop*> DESKTOPS;
+	QVector<LDesktop*> DESKTOPS;
 	QFileSystemWatcher *watcher;
 	QTimer *screenTimer;
 	QRect screenRect;
@@ -133,15 +133,15 @@ private:
 	//System Tray Variables
 	WId SystemTrayID, VisualTrayID;
 	int TrayDmgEvent, TrayDmgError;
-	QList<WId> RunningTrayApps;
+	QVector<WId> RunningTrayApps;
 	bool TrayStopping;
 	//Start Button Variables
 	QString StartButtonID;
 
 	//Task Manager Variables
 	WId lastActiveWin;
-	QList<WId> RunningApps;
-	QList<WId> checkWin;
+	QVector<WId> RunningApps;
+	QVector<WId> checkWin;
 	QFileInfoList desktopFiles;
 
 	void CleanupSession();

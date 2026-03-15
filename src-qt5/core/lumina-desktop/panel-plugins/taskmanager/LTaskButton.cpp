@@ -37,8 +37,8 @@ LTaskButton::~LTaskButton(){
 //===========
 //      PUBLIC
 //===========
-QList<WId> LTaskButton::windows(){
-  QList<WId> list;
+QVector<WId> LTaskButton::windows(){
+  QVector<WId> list;
   for(int i=0; i<WINLIST.length(); i++){
     list << WINLIST[i].windowID();
   }

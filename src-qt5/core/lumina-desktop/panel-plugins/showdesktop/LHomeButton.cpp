@@ -33,7 +33,7 @@ void LHomeButtonPlugin::updateButtonVisuals(){
 //    PRIVATE FUNCTIONS
 // ========================
 void LHomeButtonPlugin::showDesktop(){
-  QList<WId> wins = LSession::handle()->XCB->WindowList();
+  QVector<WId> wins = LSession::handle()->XCB->WindowList();
   for(int i=0; i<wins.length(); i++){
     if( LXCB::INVISIBLE != LSession::handle()->XCB->WindowState(wins[i]) ){
       LSession::handle()->XCB->MinimizeWindow(wins[i]);

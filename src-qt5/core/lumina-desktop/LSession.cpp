@@ -547,7 +547,7 @@ void LSession::refreshWindowManager(){
 
 void LSession::updateDesktops(){
   qDebug() << " - Update Desktops";
-  QVector<QScreen*> screens = QGuiApplication::screens();
+  QVector<QScreen*> screens = QVector<QScreen*>::fromList(QGuiApplication::screens());
   int sC = screens.count();
   qDebug() << "  Screen Count:" << sC;
   qDebug() << "  DESKTOPS Length:" << DESKTOPS.length();
@@ -608,7 +608,7 @@ void LSession::updateDesktops(){
 
   //Now add any new desktops
   QStringList allNames;
-  QVector<QScreen*> scrns = QApplication::screens();
+  QVector<QScreen*> scrns = QVector<QScreen*>::fromList(QApplication::screens());
   for(int i=0; i<sC; i++){
     allNames << scrns.at(i)->name();
     if(!dnums.contains(i) && !geoms.contains(screens.at(i)->geometry()) ){
@@ -667,7 +667,7 @@ void LSession::adjustWindowGeom(WId win, bool maximize){
   if(geom.isNull()){ return; } //Could not get geometry for some reason
   //Get the available geometry for the screen the window is on
   QRect desk;
-  QVector<QScreen *> screens = QGuiApplication::screens();
+  QVector<QScreen *> screens = QVector<QScreen*>::fromList(QGuiApplication::screens());
   for(int i=0; i<DESKTOPS.length(); i++){
     if( screens.at(i)->geometry().contains(geom.center()) ){
       //Window is on this screen
@@ -763,7 +763,7 @@ QFileInfoList LSession::DesktopFiles(){
 }
 
 QRect LSession::screenGeom(int num){
-  QVector<QScreen *> screens = QGuiApplication::screens();
+  QVector<QScreen *> screens = QVector<QScreen*>::fromList(QGuiApplication::screens());
   if(num < 0 || num >= screens.count() ){ return QRect(); }
   QRect geom = screens.at(num)->geometry();
   return geom;
@@ -852,7 +852,7 @@ void LSession::RootSizeChange(){
   if(DESKTOPS.isEmpty() || screenRect.isNull()){ return; } //Initial setup not run yet
 
   QRect tmp;
-  QVector<QScreen*> screens = QGuiApplication::screens();
+  QVector<QScreen*> screens = QVector<QScreen*>::fromList(QGuiApplication::screens());
   QVector<QScreen*>::const_iterator it;
   for(it = screens.constBegin(); it != screens.constEnd(); ++it) {
     tmp = tmp.united( (*it)->geometry() );

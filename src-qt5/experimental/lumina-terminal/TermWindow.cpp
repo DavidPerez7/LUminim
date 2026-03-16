@@ -17,7 +17,7 @@
 // ===============
 //        PUBLIC
 // ===============
-TermWindow::TermWindow(QSettings *set) : QWidget(0, Qt::Window | Qt::BypassWindowManagerHint){//, ui(new Ui::TermWindow){
+TermWindow::TermWindow(QSettings *set) : QWidget(0, Qt::Window){//, ui(new Ui::TermWindow){
   this->setWindowOpacity(0.85);
   CLOSING = false; //internal flag
   settings = set;

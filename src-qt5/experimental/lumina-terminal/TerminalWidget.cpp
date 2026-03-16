@@ -21,9 +21,17 @@
 TerminalWidget::TerminalWidget(QWidget *parent, QString dir) : QTextEdit(parent){
   //Setup the text widget
   closing = false;
-  QPalette P = this->palette();
+  // Use system theme colors instead of hardcoded black/white
+  // This respects the user's color scheme preferences
+  QPalette P = QApplication::palette();
+  // Set base color (background)
+  if(!P.color(QPalette::Base).isValid()) {
     P.setColor(QPalette::Base, Qt::black);
+  }
+  // Set text color (foreground)
+  if(!P.color(QPalette::Text).isValid()) {
     P.setColor(QPalette::Text, Qt::white);
+  }
   this->setPalette(P);
   this->setLineWrapMode(QTextEdit::WidgetWidth);
   this->setAcceptRichText(false);
@@ -38,7 +46,12 @@ TerminalWidget::TerminalWidget(QWidget *parent, QString dir) : QTextEdit(parent)
     resizeTimer->setSingleShot(true);
     connect(resizeTimer, SIGNAL(timeout()), this, SLOT(updateTermSize()) );
   DEFFMT = this->textCursor().charFormat(); //save the default structure for later
-  DEFFMT.setForeground(Qt::white);
+  // Use system foreground color instead of hardcoded white
+  QColor fgColor = P.color(QPalette::Text);
+  if(!fgColor.isValid()) {
+    fgColor = Qt::white;
+  }
+  DEFFMT.setForeground(fgColor);
   CFMT = DEFFMT; //current format
   selCursor = this->textCursor(); //used for keeping track of selections
   lastCursor = this->textCursor();
@@ -79,6 +92,25 @@ void TerminalWidget::aboutToClose(){
   closing = true;
   if(PROC->isOpen()){ PROC->closeTTY(); } //TTY PORT
   
+}
+
+void TerminalWidget::trimScrollback(){
+  // Remove old lines if scrollback exceeds maximum
+  QTextDocument *doc = this->document();
+  int lineCount = doc->lineCount();
+  
+  if(lineCount > MAX_SCROLLBACK_LINES) {
+    // Remove oldest lines: keep only the last MAX_SCROLLBACK_LINES lines
+    int linesToRemove = lineCount - MAX_SCROLLBACK_LINES;
+    QTextCursor cur(doc);
+    cur.movePosition(QTextCursor::Start);
+    
+    for(int i = 0; i < linesToRemove; i++) {
+      cur.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+      cur.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor); // Include newline
+      cur.removeSelectedText();
+    }
+  }
 }
 
 // ==================
@@ -180,34 +212,36 @@ void TerminalWidget::applyANSI(QByteArray code){
     qDebug() << "Move Cursor Up:" << num;
     cur.movePosition(QTextCursor::Up, QTextCursor::MoveAnchor, num);
     this->setTextCursor(cur);
-  }else if(code.endsWith("B")){ //Move Down
-    int num = 1;
-    if(code.size()>2){ num = code.mid(1, code.size()-2).toInt(); } //everything in the middle
-    QTextCursor cur = this->textCursor();
-    qDebug() << "Move Cursor Down:" << num;
-    for(int i=1; i<num; i++){
-        if(!cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 1)){
-          //Need to add a new line(row) to the editor
-          this->document()->setPlainText(this->document()->toPlainText()+"\n");
-          cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
-        }
-      }
-    //cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, num);
-    this->setTextCursor(cur);
-  }else if(code.endsWith("C")){ //Move Forward
-    int num = 1;
-    if(code.size()>2){ num = code.mid(1, code.size()-2).toInt(); } //everything in the middle
-    QTextCursor cur = this->textCursor();
-    qDebug() << "Move Cursor Forward:" << num;
-    for(int i=1; i<num; i++){
-        if(!cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 1)){
-          //Need to add a new line(row) to the editor
-          this->document()->setPlainText(this->document()->toPlainText()+" ");
-          cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
-        }
-      }
-    //cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, num);
-    this->setTextCursor(cur);
+   }else if(code.endsWith("B")){ //Move Down
+     int num = 1;
+     if(code.size()>2){ num = code.mid(1, code.size()-2).toInt(); } //everything in the middle
+     QTextCursor cur = this->textCursor();
+     qDebug() << "Move Cursor Down:" << num;
+     for(int i=1; i<num; i++){
+         if(!cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 1)){
+           //Need to add a new line(row) to the editor - use insertPlainText for efficiency
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+           cur.insertText("\n");
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
+         }
+       }
+     //cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, num);
+     this->setTextCursor(cur);
+   }else if(code.endsWith("C")){ //Move Forward
+     int num = 1;
+     if(code.size()>2){ num = code.mid(1, code.size()-2).toInt(); } //everything in the middle
+     QTextCursor cur = this->textCursor();
+     qDebug() << "Move Cursor Forward:" << num;
+     for(int i=1; i<num; i++){
+         if(!cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 1)){
+           //Need to add a space - use insertText for efficiency instead of setPlainText
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+           cur.insertText(" ");
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor to the end
+         }
+       }
+     //cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, num);
+     this->setTextCursor(cur);
   }else if(code.endsWith("D")){ //Move Back
     int num = 1;
     if(code.size()>2){ num = code.mid(1, code.size()-2).toInt(); } //everything in the middle
@@ -254,22 +288,24 @@ void TerminalWidget::applyANSI(QByteArray code){
       QTextCursor cur(this->textCursor());
       cur.setPosition(QTextCursor::Start, QTextCursor::MoveAnchor); //go to start of document
        //qDebug() << " - Pos After Start Move:" << cur.position();
-      for(int i=1; i<numR; i++){
-        if(!cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 1)){
-          //Need to add a new line(row) to the editor
-          this->document()->setPlainText(this->document()->toPlainText()+"\n");
-          cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
-        }
-      }
-      //if( !cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, numR) ){ qDebug() << "Could not go to row:" << numR; }
-       //qDebug() << " - Pos After Down Move:" << cur.position();
-      for(int i=1; i<numC; i++){
-        if(!cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 1)){
-          //Need to add a new line(row) to the editor
-          this->document()->setPlainText(this->document()->toPlainText()+" ");
-          cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
-        }
-      }
+       for(int i=1; i<numR; i++){
+         if(!cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 1)){
+           //Need to add a new line(row) to the editor - use insertText for efficiency
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+           cur.insertText("\n");
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor down to the new line
+         }
+       }
+       //if( !cur.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, numR) ){ qDebug() << "Could not go to row:" << numR; }
+        //qDebug() << " - Pos After Down Move:" << cur.position();
+       for(int i=1; i<numC; i++){
+         if(!cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 1)){
+           //Need to add a space - use insertText for efficiency instead of setPlainText
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+           cur.insertText(" ");
+           cur.movePosition(QTextCursor::End, QTextCursor::MoveAnchor); //now move the cursor to the end
+         }
+       }
       //if( !cur.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, numC) ){ qDebug() << "Could not go to col:" << numC; }
       /*this->textCursor().setPosition( this->document()->findBlockByLineNumber(numR).position() );
       qDebug() << " - Pos After Row Move:" << this->textCursor().position();
@@ -511,6 +547,8 @@ void TerminalWidget::UpdateText(){
   //qDebug() << "UpdateText";
   if(!PROC->isOpen()){ return; }
   applyData(PROC->readTTY());
+  //Trim scrollback to prevent unlimited memory growth
+  trimScrollback();
   //adjust the scrollbar as needed
   this->ensureCursorVisible();
 }

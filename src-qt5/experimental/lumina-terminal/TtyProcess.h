@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <libutil.h>
+#include <pty.h>
 
 class TTYProcess : public QObject{
 	Q_OBJECT

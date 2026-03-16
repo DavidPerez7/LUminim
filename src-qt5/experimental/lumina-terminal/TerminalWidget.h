@@ -41,6 +41,7 @@ private:
 	void applyData(QByteArray data); //overall data parsing
 	void applyANSI(QByteArray code); //individual code application
 	void applyANSIColor(int code); //Add the designated color code to the  CFMT structure
+	void trimScrollback(); //Remove old lines to limit memory usage
 
 	//Outgoing Data parsing
 	void sendKeyPress(int key);
@@ -48,6 +49,7 @@ private:
 	//Special incoming data flags
 	int startrow, endrow; //indexes for the first/last row ("\x1b[A;Br" CC)
 	bool altkeypad;
+	static const int MAX_SCROLLBACK_LINES = 5000; //Limit scrollback to 5000 lines
 private slots:
 	void UpdateText();
 	void ShellClosed();

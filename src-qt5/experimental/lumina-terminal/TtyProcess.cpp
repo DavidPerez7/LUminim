@@ -4,7 +4,7 @@
 #include <QProcessEnvironment>
 #include <QTimer>
 
-#define DEBUG 1
+#define DEBUG 0
 
 TTYProcess::TTYProcess(QObject *parent) : QObject(parent){
   childProc = 0;
@@ -116,8 +116,10 @@ QByteArray TTYProcess::readTTY(){
   QByteArray BA;
   //qDebug() << "Read TTY";
   if(sn==0){ return BA; } //not setup yet
-  char buffer[64];
-  ssize_t rtot = read(sn->socket(),&buffer,64);
+  // Increased buffer size from 64 to 4096 bytes to reduce I/O overhead
+  // This allows reading more data per system call, improving terminal responsiveness
+  char buffer[4096];
+  ssize_t rtot = read(sn->socket(),&buffer,4096);
   //buffer[rtot]='\0';
   BA = QByteArray(buffer, rtot);
   //qDebug() << " - Got Data:" << BA;
@@ -344,7 +346,12 @@ pid_t TTYProcess::LaunchProcess(int& fd, char *prog, char **child_args){
 void TTYProcess::setupTtyFd(int fd){
   struct termios TSET;
     tcgetattr(fd, &TSET); //read the current settings
-    cfmakesane(&TSET); //set the SANE mode on the settings ( RAW: cfmakeraw(&TSET); )
+    // Replace cfmakesane with manual sane mode setup (since libutil.h is not available)
+    // Set sane terminal modes: echo, canonical mode, etc.
+    TSET.c_cflag |= (CLOCAL | CREAD | CS8);
+    TSET.c_iflag |= (BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    TSET.c_lflag |= (ECHO | ICANON | IEXTEN | ISIG);
+    TSET.c_oflag |= OPOST;
     //Set Input Modes
     //TSET.c_iflag |= IGNPAR; //ignore parity errors
     //TSET.c_iflag &= ~(IGNBRK | PARMRK | ISTRIP | ICRNL | IXON | IXANY | IXOFF); //ignore special characters

@@ -9,6 +9,7 @@ moc_*.cpp
 ui_*.h
 qrc_*.cpp
 .build
+.github/
 
 # Compiled binaries
 src-qt5/core/lumina-desktop/lumina-desktop

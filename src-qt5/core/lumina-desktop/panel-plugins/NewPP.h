@@ -18,7 +18,6 @@
 #include "spacer/LSpacer.h"
 #include "line/LLine.h"
 #include "clock/LClock.h"
-#include "battery/LBattery.h"
 #include "taskmanager/LTaskManagerPlugin.h"
 #include "showdesktop/LHomeButton.h"
 #include "appmenu/LAppMenuPlugin.h"
@@ -48,8 +47,6 @@ public:
 	    plug = new LTaskManagerPlugin(parent, plugin, horizontal);
 	  }else if(plugin.startsWith("systemtray---")){
 	    plug = new LSysTray(parent, plugin, horizontal);
-	  }else if(plugin.startsWith("battery---") && LOS::hasBattery()){
-	    plug = new LBattery(parent, plugin, horizontal);
 	  }else if(plugin.startsWith("clock---")){
 	    plug = new LClock(parent, plugin, horizontal);
 	  }else if(plugin.startsWith("appmenu---")){

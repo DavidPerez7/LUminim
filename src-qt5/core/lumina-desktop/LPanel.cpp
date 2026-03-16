@@ -414,3 +414,43 @@ void LPanel::leaveEvent(QEvent *event){
   QWidget::leaveEvent(event);
   //event->accept(); //just to quiet the compile warning
 }
+
+void LPanel::keyPressEvent(QKeyEvent *event) {
+	// Atajo de teclado para activar modo edición: Ctrl+Alt+P
+	if((event->modifiers() & Qt::ControlModifier) && 
+	   (event->modifiers() & Qt::AltModifier) && 
+	   event->key() == Qt::Key_P) {
+		if(panelEditor) {
+			panelEditor->setEditMode(!panelEditor->isEditMode());
+			event->accept();
+			return;
+		}
+	}
+	QWidget::keyPressEvent(event);
+}
+
+void LPanel::mousePressEvent(QMouseEvent *event) {
+	if(panelEditor && panelEditor->isEditMode()) {
+		if(panelEditor->startDrag(event->pos())) {
+			event->accept();
+			return;
+		}
+	}
+	QWidget::mousePressEvent(event);
+}
+
+void LPanel::mouseMoveEvent(QMouseEvent *event) {
+	if(panelEditor && panelEditor->isEditMode()) {
+		panelEditor->updateDrag(event->pos());
+	}
+	QWidget::mouseMoveEvent(event);
+}
+
+void LPanel::mouseReleaseEvent(QMouseEvent *event) {
+	if(panelEditor && panelEditor->isEditMode()) {
+		panelEditor->endDrag(event->pos());
+		event->accept();
+		return;
+	}
+	QWidget::mouseReleaseEvent(event);
+}

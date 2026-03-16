@@ -53,6 +53,26 @@ LUminim is a lightweight desktop environment based on Lumina, designed for minim
 
 ---
 
+## 🎛️ Panel Editor (NEW)
+
+LUminim now includes a **minimalista panel editor** to customize your panel layout without editing config files:
+
+**How to Use:**
+- Press **`Ctrl+Alt+P`** to toggle panel edit mode
+- **Add Quick Launches**: Right-click panel → Add Application
+- **Drag & Drop**: Move plugins by dragging (threshold: 30px)
+- **Resize**: Use +/- buttons on each plugin
+- Changes save automatically
+
+**Supported Operations:**
+- ✅ Add Quick Launch shortcuts
+- ✅ Reorder plugins (drag & drop)
+- ✅ Resize plugins dynamically
+- ✅ Remove plugins instantly
+- ✅ Persistent configuration storage
+
+---
+
 ## ⚠️ Breaking Changes from Original Lumina
 
 If you're migrating from official Lumina:

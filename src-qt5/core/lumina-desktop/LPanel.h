@@ -20,9 +20,12 @@
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QKeyEvent>
+#include <QMouseEvent>
 
 #include "panel-plugins/NewPP.h"
 #include "panel-plugins/LPPlugin.h"
+#include "LPanelEditor.h"
 
 #include <LuminaX11.h>
 #include <LuminaOS.h>
@@ -43,6 +46,7 @@ private:
 	int viswidth, fullwidth;
 	QList<LPPlugin*> PLUGINS;
 	QRect desiredGeom;
+	LPanelEditor *panelEditor;
 
 	int Screen(); //Turn the screenID into the appropriate number
 
@@ -77,6 +81,10 @@ protected:
 	void paintEvent(QPaintEvent *event);
 	void enterEvent(QEvent *event);
 	void leaveEvent(QEvent *event);
+	void keyPressEvent(QKeyEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif
